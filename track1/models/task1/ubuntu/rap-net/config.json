@@ -1,0 +1,30 @@
+{
+    "arch": "MCAN",
+    "model_parameters" : {
+        "embeddings": "../data/task1/ubuntu_embeddings.pkl",
+        "dim_hidden": 128,
+        "batch_size": 32,
+        "max_epochs": 30,
+        "loss": "BCELoss",
+        "similarity": "inner_product",
+        "threshold": 0.0,
+        "learning_rate": 1e-3,
+        "dropout_rate": 0.3,
+        "utt_enc_type": "rnn",
+        "use_co_att": true,
+        "use_intra_att": true,
+        "only_last_context": false,
+        "intra_per_utt": false,
+        "use_highway_encoder": true
+    },
+    "train": "../data/task1/ubuntu_train.pkl",
+    "test": "../data/task1/ubuntu_test.pkl",
+    "train_n_positive": 1,
+    "train_n_negative": 9,
+    "valid_n_positive": 1,
+    "valid_n_negative": 100,
+    "context_padded_len": 400,
+    "option_padded_len": 100,
+    "f1_max_selected": 1,
+    "rank_na": false
+}
