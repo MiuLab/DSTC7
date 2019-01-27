@@ -16,7 +16,6 @@ from tqdm import tqdm
 from visdom import Visdom
 
 from constants import SEED, DEVICE
-from utils import onehot
 
 
 random.seed(SEED)

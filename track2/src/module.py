@@ -40,7 +40,8 @@ class Embedding(nn.Module):
         self.vocab_size = len(vocab.word)
 
         try:
-            self.embedding = nn.Embedding.from_pretrained(torch.FloatTensor(vocab.word.emb))
+            self.embedding = \
+                nn.Embedding.from_pretrained(torch.FloatTensor(vocab.word.emb))
         except AttributeError:
             self.embedding = nn.Embedding(
                 self.vocab_size, self.emb_dim, padding_idx=vocab.word.sp.pad.idx)
@@ -56,31 +57,18 @@ class Embedding(nn.Module):
 
         return emb
 
-    # def weighted_sum(self, weight):
-    #     return (weight.unsqueeze(-1) * self.embedding.weight).sum(-2)
-
 
 class Encoder(nn.Module):
-    def __init__(self, embedding, hidden_size, num_layers, bidirectional, dropout,
-                 gumbel_embedding=False):
+    def __init__(self, embedding, hidden_size, num_layers, bidirectional, dropout):
         super(Encoder, self).__init__()
 
         self.embedding = embedding
         self.gru = nn.GRU(
             self.embedding.emb_dim, hidden_size, num_layers=num_layers,
             dropout=(dropout if num_layers > 1 else 0), bidirectional=bidirectional)
-        self.gumbel_embedding = gumbel_embedding
 
     def forward(self, x):
-        if not self.gumbel_embedding:
-            emb = self.embedding(x)
-        else:
-            # TODO: Use weighted sum
-            orig_shape = x.shape
-            x = x.reshape(-1, self.embedding.vocab_size)
-            x = F.gumbel_softmax(x, hard=True).reshape(*orig_shape)
-            m, i = x.max(dim=-1)
-            emb = m.unsqueeze(-1) * self.embedding(i)
+        emb = self.embedding(x)
         output, hidden = self.gru(emb)
 
         return output, hidden
@@ -123,46 +111,10 @@ class AdditiveAttention(nn.Module):
         hidden = hidden.transpose(0, 1).reshape(batch_size, -1)
         x = self.hidden_linear(hidden) + self.memory_linear(memory)
         score = self.output_linear(x.tanh())
-        # score *= memory_pad_mask.unsqueeze(-1).float()
         score.masked_fill_(memory_pad_mask.unsqueeze(-1) == 0, float('-inf'))
         attention = F.softmax(score, dim=0)
 
         return attention
-
-
-class Coattention(nn.Module):
-    def __init__(self, C_input_size, Q_input_size):
-        super(Coattention, self).__init__()
-
-        self.Q_linear = nn.Linear(Q_input_size, C_input_size)
-        self.linear = nn.Linear(C_input_size * 3, 1)
-
-    def forward(self, C, Q, C_mask, Q_mask):
-        C = C.transpose(0, 1)
-        Q = Q.transpose(0, 1)
-        C_mask = C_mask.transpose(0, 1)
-        Q_mask = Q_mask.transpose(0, 1)
-
-        c_len, q_len = C.shape[1], Q.shape[1]
-
-        Q = self.Q_linear(Q)
-        C_expanded = C.unsqueeze(2).expand(-1, -1, q_len, -1)
-        Q_expanded = Q.unsqueeze(1).expand(-1, c_len, -1, -1)
-
-        x = torch.cat((C_expanded, Q_expanded, C_expanded * Q_expanded), dim=-1)
-        S = self.linear(x).squeeze(-1)
-        S_row = S.masked_fill(Q_mask.unsqueeze(1) == 0, -np.inf)
-        S_row = F.softmax(S_row, dim=2)
-        S_col = S.masked_fill(C_mask.unsqueeze(2) == 0, -np.inf)
-        S_col = F.softmax(S_col, dim=1)
-
-        A = S_row @ Q
-        B = S_row @ S_col.transpose(1, 2) @ C
-        CQ = torch.cat((C, A, C * A, C * B), dim=-1)
-
-        CQ = CQ.transpose(0, 1)
-
-        return CQ
 
 
 class Decoder(nn.Module):
@@ -179,7 +131,7 @@ class Decoder(nn.Module):
                 embedding.emb_dim + latent_size,
                 hidden_size, num_layers=num_layers,
                 dropout=(dropout if num_layers > 1 else 0))
-        if self.attn_type in [1, 4]:
+        if self.attn_type == 1:
             self.c_attention = AdditiveAttention(
                 num_layers * hidden_size, c_memory_size, d_model)
             self.gru = nn.GRU(
@@ -229,12 +181,12 @@ class Decoder(nn.Module):
                         f_attn = (f_attn + cf_attn) / 2
                     f_context = (f_attn * f_memory).sum(dim=0, keepdim=True)
                 if latent_code is not None:
-                    if self.attn_type in [1, 4]:
+                    if self.attn_type == 1:
                         x = torch.cat((emb, c_context, latent_code), dim=-1)
                     elif self.attn_type in [2, 3]:
                         x = torch.cat((emb, c_context, f_context, latent_code), dim=-1)
                 else:
-                    if self.attn_type in [1, 4]:
+                    if self.attn_type == 1:
                         x = torch.cat((emb, c_context), dim=-1)
                     elif self.attn_type in [2, 3]:
                         x = torch.cat((emb, c_context, f_context), dim=-1)
@@ -276,12 +228,12 @@ class Decoder(nn.Module):
                         f_context = (f_attn * f_memory[:, bidx, :].unsqueeze(1)).sum(dim=0, keepdim=True)
                     if latent_code is not None:
                         lc = latent_code[:, bidx, :].unsqueeze(1).repeat(1, emb.shape[1], 1)
-                        if self.attn_type in [1, 4]:
+                        if self.attn_type == 1:
                             x = torch.cat((emb, c_context, lc), dim=-1)
                         elif self.attn_type in [2, 3]:
                             x = torch.cat((emb, c_context, f_context, lc), dim=-1)
                     else:
-                        if self.attn_type in [1, 4]:
+                        if self.attn_type == 1:
                             x = torch.cat((emb, c_context), dim=-1)
                         elif self.attn_type in [2, 3]:
                             x = torch.cat((emb, c_context, f_context), dim=-1)
@@ -334,19 +286,12 @@ class Net(nn.Module):
             self.f_encoder = ConvEncoder(
                 embedding, f_en_kernel_sizes, f_en_filters)
 
-        self.coattention = Coattention(
-            c_en_hidden_size * (c_en_bidirectional + 1), f_total_output_size)
-        if self.attn_type == 4:
-            self.coattention_encoder = nn.GRU(
-                c_en_hidden_size * 8, c_en_hidden_size, num_layers=c_en_num_layers,
-                bidirectional=c_en_bidirectional, dropout=dropout)
-
         self.latent_size = latent_size
         if latent_size > 0:
             self.r_encoder = Encoder(
                 embedding, r_en_hidden_size, r_en_num_layers, r_en_bidirectional,
                 dropout)
-            if self.attn_type in [0, 1, 4]:
+            if self.attn_type in [0, 1]:
                 input_size = c_total_hidden_size + r_total_hidden_size
             elif self.attn_type in [2, 3]:
                 input_size = \
@@ -382,17 +327,13 @@ class Net(nn.Module):
 
         c_en_output, c_hidden = self.c_encoder(c)
         f_en_output, f_hidden = self.f_encoder(f)
-        if self.attn_type == 4:
-            c_en_output = self.coattention(
-                c_en_output, f_en_output, c_pad_mask, f_pad_mask)
-            c_en_output, c_hidden = self.coattention_encoder(c_en_output)
 
         if self.latent_size > 0:
             _, r_hidden = self.r_encoder(r)
             c_hidden_flat = c_hidden.transpose(0, 1).reshape(batch_size, -1)
             f_hidden_flat = f_hidden.transpose(0, 1).reshape(batch_size, -1)
             r_hidden_flat = r_hidden.transpose(0, 1).reshape(batch_size, -1)
-            if self.attn_type in [0, 1, 4]:
+            if self.attn_type in [0, 1]:
                 latent_input = \
                     torch.cat((c_hidden_flat, r_hidden_flat), dim=-1)
             elif self.attn_type in [2, 3]:
@@ -439,12 +380,6 @@ class Net(nn.Module):
         score = self.cf_attn_linear((f_en_output_ + c_en_output_).tanh()).squeeze()
         score.masked_fill_(f_pad_mask.t().unsqueeze(-1) == 0, float('-inf'))
         cf_attn = F.softmax(score.sum(dim=-1), dim=-1).t().unsqueeze(-1)
-
-        # attn-type: 4
-        if self.attn_type == 4:
-            c_en_output = self.coattention(
-                c_en_output, f_en_output, c_pad_mask, f_pad_mask)
-            c_en_output, c_hidden = self.coattention_encoder(c_en_output)
 
         de_init_hidden = (
             self.hidden_projector(c_hidden.transpose(0, 1).reshape(batch_size, -1))

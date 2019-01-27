@@ -85,51 +85,6 @@ class Vocab:
         return len(self.__vi)
 
 
-# def create_word_freq(vocab_dir, conv_paths, fact_paths):
-#     print('[*] Calculating word frequency')
-
-#     if not vocab_dir.is_dir():
-#         vocab_dir.mkdir()
-#         print(f'[-] Vocab directory created at {vocab_dir}')
-
-#     def tokenize(sent):
-#         return [w.lower() for w in sent.split()]
-
-#     word_freq_path = vocab_dir / f'word.freq'
-#     if word_freq_path.exists():
-#         word_freq = pickle.load(word_freq_path.open(mode='rb'))
-#         print(f'[-] Word frequency loaded from {word_freq_path}')
-#     else:
-#         word_freq = Counter()
-#         split_pattern = re.compile('START|EOS')
-#         for conv_path in conv_paths:
-#             lines = conv_path.open().readlines()
-#             bar = tqdm(lines, desc=f'Processing {conv_path}', leave=False)
-#             for l in bar:
-#                 *_, context, response = l.strip().split('\t')
-#                 context = [c.strip() for c in split_pattern.split(context)
-#                            if c.strip() != '']
-#                 for c in context:
-#                     word_freq.update(tokenize(c))
-#                 word_freq.update(response)
-#         for fact_path in fact_paths:
-#             lines = fact_path.open().readlines()
-#             bar = tqdm(lines, desc=f'Processing {fact_path}', leave=False)
-#             for l in bar:
-#                 fact = l.strip().split('\t')[-1]
-#                 word_freq.update(tokenize(fact))
-
-#         # Add a special '<eou>' token to indicate end of utterance, it's used to
-#         # seperate utterances in a context when the context is represented as a single
-#         # string instead of a list of utterance strings
-#         word_freq.update({'<eou>': float('inf')})
-
-#         pickle.dump(word_freq, word_freq_path.open(mode='wb'))
-#         print(f'[-] Word frequency created and saved to {word_freq_path}')
-
-#     return word_freq
-
-
 def create_vocab(train_conv, train_fact, dev_conv, dev_fact, glove_path,
                  word_special_tokens, word_vocab_size, word_emb_dim,
                  char_special_tokens, char_emb_dim, full_special_tokens):
