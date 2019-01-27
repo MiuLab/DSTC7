@@ -1,0 +1,55 @@
+vocab:
+  glove_path: '../vectors.50iter.100d.txt'
+  word_special_tokens: ['pad', 'unk', 'sos', 'eos', 'eou']
+  word_vocab_size: 40000
+  word_emb_dim: 100
+  char_special_tokens: ['pad', 'unk', 'sos', 'eou']
+  char_emb_dim: 100
+  full_special_tokens: ['pad', 'unk']
+data:
+  preprocessed_dir: '../preprocessed/1501-1612'
+  topn_facts: 1
+  use_filter: True
+  max_seq_len: 100
+  batch_size: 24
+  n_workers: 6
+  drop_last: True
+net:
+  c_en_hidden_size: 128
+  c_en_num_layers: 2
+  c_en_bidirectional: True
+  f_en_type: "CNN"
+  f_en_kernel_sizes: [1, 2, 3]
+  f_en_filters: [100, 100, 100]
+  f_en_hidden_size: 128
+  f_en_num_layers: 2
+  f_en_bidirectional: True
+  r_en_hidden_size: 128
+  r_en_num_layers: 2
+  r_en_bidirectional: True
+  de_hidden_size: 128
+  de_num_layers: 2
+  d_model: 128
+  dropout: 0.1
+  latent_size: 128  # when set to 0, cvae will be disabled
+  # 1: context-only
+  # 2: context + fact
+  # 3: context + fact with context-guided fact attention
+  attn_type: 3
+optim:
+  algo: 'Adam'
+  kwargs:
+    lr: 1.0e-3
+    weight_decay: 0
+train:
+  exp_dir: '../experiments'
+  exp_name: '1501-1612_attn-type=3_128x2'
+  visdom_port: 1234
+  n_epochs: 10
+  label_confidence: 1  # when set to 1, label smoothing is disabled
+  kld_loss_init_ratio: 1e-3
+  kld_loss_anneal_rate: 1.0003
+  # scheduled_sampling_init_ratio: 1e-3
+  # scheduled_sampling_anneal_rate: 1.0002
+  max_grad_norm: 0.25  # when set to 0, gradient norm clipping is disabled
+  beam_size: 8
