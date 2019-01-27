@@ -1,0 +1,26 @@
+{
+    "arch": "RecurrentTransformer",
+    "model_parameters" : {
+        "embeddings": "../data/task4/advising_embeddings.pkl",
+        "valid": "../data/task4/advising_valid.pkl",
+        "batch_size": 32,
+        "max_epochs": 30,
+        "loss": "BCELoss",
+        "has_info": true,
+        "fine_tune_emb": false,
+        "learning_rate": 0.0001,
+	"seq2vec_pooling": "max",
+	"bi_attention": "all"
+    },
+    "train": "../data/task4/advising_train.pkl",
+    "test": "../data/task4/advising_test.pkl",
+    "train_n_positive": 1,
+    "train_n_negative": 9,
+    "valid_n_positive": 1,
+    "valid_n_negative": 100,
+    "context_padded_len": 400,
+    "option_padded_len": 100,
+    "f1_max_selected": 1,
+    "f1_threshold": 0,
+    "rank_na": true
+}
