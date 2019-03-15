@@ -7,7 +7,7 @@ conda install mkl-service
 ```
 ## Prepare data
 
-All the data can be found [here](https://drive.google.com/drive/u/2/folders/1JGE4eeelA0QBA7BwYvj89kSClE3f9k65).
+All the data can be found [here](https://github.com/hudaAlamri/DSTC7-Audio-Visual-Scene-Aware-Dialog-AVSD-Challenge).
 
 You need to first make symbolic link under `data` folder like this.
 
