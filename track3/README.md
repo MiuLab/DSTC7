@@ -7,7 +7,7 @@ conda install mkl-service
 ```
 ## Prepare data
 
-All the data can be found [here](https://github.com/hudaAlamri/DSTC7-Audio-Visual-Scene-Aware-Dialog-AVSD-Challenge).
+All the data can be found in the ofiicial repository [here](https://github.com/hudaAlamri/DSTC7-Audio-Visual-Scene-Aware-Dialog-AVSD-Challenge).
 
 You need to first make symbolic link under `data` folder like this.
 
@@ -25,9 +25,10 @@ word_embedding/
 
 ## Training
 ```
-    python -m src.train --modelType [SimpleModel|ModalAttentionModel] 
+    python -m src.train --modelType [SimpleModel|....] 
 ```
 For more information, use `--help` flag.
+A simple example can be found in `train_simple.sh`
 
 ## Testing
 ```

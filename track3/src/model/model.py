@@ -46,20 +46,8 @@ class DialogModel(object):
         log.logging.debug("[!] Using {} model".format(self.modelType))
         if self.modelType == "SimpleModel":
             self.model = SimpleModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, attention='fusion', dropout_rate=0.5, feature_set=0)
-        elif self.modelType == 'SimpleModel2':
-            self.model = SimpleModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, attention='fusion', dropout_rate=0.5, feature_set=1)
-        elif self.modelType == 'SimpleModel3':
-            self.model = SimpleModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, attention='fusion', dropout_rate=0.5, feature_set=2)
-        elif self.modelType == 'SimpleModel4':
-            self.model = SimpleModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, attention='fusion', dropout_rate=0.5, feature_set=3)
-        elif self.modelType == 'SimpleModel5':
-            self.model = SimpleModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, attention='fusion', dropout_rate=0.5, feature_set=4)
         elif self.modelType == 'TextModel':
             self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru',  pure_text=True, word_attn=False, text_fusion=True, video_fusion=False, fuse_attn=True, attn_on_text=True, gen_attn='linear')
-        elif self.modelType == 'TextModel1':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru',  pure_text=True, word_attn=False, text_fusion=True, video_fusion=False, cat_fusion=True, fuse_attn=True, attn_on_text=True, gen_attn='linear')
-        elif self.modelType == 'TextModel2':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru',  pure_text=True, word_attn=False, text_fusion=True, video_fusion=False, cat_fusion=True, fuse_attn=True,  gen_attn='none')
         elif self.modelType == 'ConvFusionModel':
             self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, fuse='conv11', gen_attn='none')
         elif self.modelType == 'ConvFusionLargeModel':
@@ -70,8 +58,6 @@ class DialogModel(object):
             self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=True, video_fusion=False, fuse_attn=True, fuse='conv11', gen_attn='linear')
         elif self.modelType == 'I3dFusionModel':
             self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', use_i3d=True, word_attn=False, text_fusion=True, video_fusion=False, fuse_attn=True, gen_attn='linear')
-        elif self.modelType == 'FusionModel2':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=True, video_fusion=False, fuse_attn=True, attn_on_text=True, gen_attn='linear')
         elif self.modelType == 'TextFusionModel':
             self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=True, video_fusion=False, fuse_attn=False, attn_on_fusion=True, gen_attn='linear')
         elif self.modelType == 'TopDownModel':
@@ -86,24 +72,6 @@ class DialogModel(object):
             self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='transformer', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, gen_attn='none')
         elif self.modelType == 'AttentionModel':
             self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, gen_attn='linear')
-        elif self.modelType == 'VideoAttentionModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, attn_on_video=True, gen_attn='linear')
-        elif self.modelType == 'TextAttentionModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, attn_on_text=True, gen_attn='linear')
-        elif self.modelType == 'DialogAttentionModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, attn_on_dialog=True, gen_attn='linear')
-        elif self.modelType == 'CatFusionModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, fuse='cat', gen_attn='none')
-        elif self.modelType == 'AddFusionModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, fuse='add', gen_attn='none')
-        elif self.modelType == 'ProductFusionModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, fuse='product', gen_attn='none')
-        elif self.modelType == 'VideoCaptionAttnModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, attn_on_video_text=True, gen_attn='linear')
-        elif self.modelType == 'CaptionDialogAttnModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, attn_on_text_dialog=True, gen_attn='linear')
-        elif self.modelType == 'VideoDialogAttnModel':
-            self.model = FusionModel(self.fusion_hidden_size, self.word_embed_size, self.voc_size, dropout_rate=0.5, encoder='gru', word_attn=False, text_fusion=False, video_fusion=False, fuse_attn=False, attn_on_video_dialog=True, gen_attn='linear')
         else:
             raise NotImplementedError
         
