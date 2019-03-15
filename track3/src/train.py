@@ -1,8 +1,8 @@
-from AVSD_Jim.src.model.model import DialogModel
-from AVSD_Jim.src.log import log
-from AVSD_Jim.src.dataset.dataset import AVSD_Dataset
-from AVSD_Jim.src.util import utils
-from AVSD_Jim.src.util.WordHelper import WordHelper
+from src.model.model import DialogModel
+from src.log import log
+from src.dataset.dataset import AVSD_Dataset
+from src.util import utils
+from src.util.WordHelper import WordHelper
 
 import argparse
 import torch

@@ -1,8 +1,8 @@
-from AVSD_Jim.src.model.net.simple_model import SimpleModel
-from AVSD_Jim.src.model.net.fusion_model import FusionModel
-from AVSD_Jim.src.log import log
-from AVSD_Jim.src.util import utils
-from AVSD_Jim.src.util.WordHelper import WordHelper
+from src.model.net.simple_model import SimpleModel
+from src.model.net.fusion_model import FusionModel
+from src.log import log
+from src.util import utils
+from src.util.WordHelper import WordHelper
 import torch
 from torch import nn
 from tqdm import tqdm
