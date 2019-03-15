@@ -12,7 +12,6 @@ from ..components.QuestionEncoder import Question_Encoder
 from ..components.BiattentionGenerator import Biattention_Generator
 from ..components.AttentionGenerator import Attention_Generator
 # TODO: Add trainable word embedding
-from ..components.ban import build_ban
 from ..components.fusion_attention import WordAttention, FullyAttention, MultiHeadedAttention
 
 class CatFusion(nn.Module):

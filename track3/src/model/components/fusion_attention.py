@@ -8,7 +8,7 @@ import copy
 
 class FullyAttention(nn.Module):
     '''
-    Attention proposed in section 2.3
+    Attention proposed in FusionNet
     '''
     def __init__(self, in_dim, attn_dim):
         super(FullyAttention, self).__init__()
