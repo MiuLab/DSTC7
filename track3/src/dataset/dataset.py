@@ -2,9 +2,9 @@ from torch.utils.data import Dataset
 import torch
 from pathlib import Path
 from collections import namedtuple
-from AVSD_Jim.src.util.WordHelper import WordHelper
-from AVSD_Jim.src.util.SequenceHelper import SequenceHelper
-from AVSD_Jim.src.log import log
+from src.util.WordHelper import WordHelper
+from src.util.SequenceHelper import SequenceHelper
+from src.log import log
 import numpy as np
 import json
 import itertools

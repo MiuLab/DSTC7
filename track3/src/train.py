@@ -51,13 +51,13 @@ def init(args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_base_path", type=Path, default="./AVSD_Jim/data")
+    parser.add_argument("--data_base_path", type=Path, default="./data")
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--shuffle", type=utils.str2bool, default="True")
     parser.add_argument("--cuda", type=utils.str2bool, default="True")
-    parser.add_argument("--outputDir", type=Path, default="./AVSD_Jim/output/")
+    parser.add_argument("--outputDir", type=Path, default="./output/")
     parser.add_argument("--modelType", type=str, default="SimpleModel")
-    parser.add_argument("--context", type=int, default=1)
+    parser.add_argument("--context", type=int, default=1, help='use whole dialog as context or others')
     parser.add_argument('--elmo', type=int, default=0)
     parser.add_argument('--video_upsample', action='store_true', default=False)
     parser.add_argument('--finetune', action='store_true', default=False)
